@@ -1,0 +1,41 @@
+{
+  "db": {
+    "connection": {
+      "host": "localhost",
+      "port": 27888,
+      "user": "mongoadmin",
+      "password": "secret",
+      "database": "test",
+      "authMechanism": "DEFAULT",
+      "authSource": "admin"
+    },
+    "migrationsStoreTable":{
+      "tableName": "migrations-store",
+      "tableId": "id"
+    },
+    "seeds": {
+      "directory": "./priv/seeds"
+    }
+  },
+  "app":{
+    "migrationsDir": "./src/data",
+    "operationsLabels": {
+      "statusExecuted": "EXECUTED",
+      "statusRolledBack": "ROLLED_BACK",
+      "statusPending": "PENDING",
+      "rolledBackSuccess": "ROLLED_BACK_SUCCESS",
+      "rolledBackFailed": "ROLLED_BACK_FAILED",
+      "outcomeSuccess": "COMPLETE_SUCCESS",
+      "outcomeFailed": "COMPLETE_FAILED",
+      "outcomeMissing": "NONE"
+    }
+  },
+  "log": {
+    "name": "app",
+    "base": {
+      "env": "dev"
+    },
+    "enabled": true,
+    "level": 20
+  }
+}

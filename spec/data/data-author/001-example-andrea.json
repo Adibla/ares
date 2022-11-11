@@ -1,0 +1,6 @@
+{
+  "author": "AndreaFile",
+  "dbms":"mongodb",
+  "up": "Insert x",
+  "down": "delete y"
+}

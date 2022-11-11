@@ -1,0 +1,6 @@
+{
+  "author": "Andrea",
+  "dbms":"MYSQL",
+  "up": "SELECT * FROM app.`migrations-store`;",
+  "down": "delete y"
+}

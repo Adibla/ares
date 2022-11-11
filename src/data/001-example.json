@@ -1,0 +1,16 @@
+{
+  "author": "Andrea",
+  "dbms":"MONGODB",
+  "up":  {
+    "findAndModify": "people",
+    "query": { "name": "Andy" },
+    "update": {"$inc": { "score": 1 } },
+    "upsert": true
+  },
+  "down":{
+    "findAndModify": "people",
+    "query": { "name": "Andy" },
+    "update": {"$inc": { "score": 1 } },
+    "upsert": true
+  }
+}

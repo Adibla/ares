@@ -1,0 +1,36 @@
+{
+  "db":  {
+    "connection": {
+      "host": "DB_HOST",
+      "port": "DB_PORT",
+      "user": "DB_USER",
+      "password": "DB_PASS",
+      "database": "DB_NAME",
+      "authMechanism": "AUTH_MECHANISM",
+      "authSource": "AUTH_SOURCE"
+    },
+    "migrationsStoreTable":{
+      "tableName": "MIGRATIONS_STORE",
+      "tableId": "MIGRATIONS_STORE_ID"
+    }
+  },
+  "app":{
+    "migrationsDir": "MIGRATIONS_DIR",
+    "operationsLabels": {
+      "statusExecuted": "STATUS_EXECUTED",
+      "statusRolledBack": "STATUS_ROLLED_BACK",
+      "statusPending": "STATUS_PENDING",
+      "rolledBackSuccess": "ROLLED_BACK_SUCCESS",
+      "rolledBackFailed": "ROLLED_BACK_FAILED",
+      "outcomeSuccess": "OUTCOME_SUCCESS",
+      "outcomeFailed": "OUTCOME_FAILED",
+      "outcomeMissing": "OUTCOME_MISSING"
+    }
+  },
+  "log": {
+    "name": "SERVICE_NAME",
+    "base": {
+      "env": "NODE_ENV"
+    }
+  }
+}

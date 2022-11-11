@@ -1,0 +1,39 @@
+{
+  "db":  {
+    "connection": {
+      "host": "",
+      "port": 27017,
+      "user": "",
+      "password": "",
+      "database": "",
+      "authMechanism": "DEFAULT",
+      "authSource": "admin"
+    },
+    "migrationsStoreTable":{
+      "tableName": "migrations-store",
+      "tableId": "id"
+    },
+    "seeds": {
+      "directory": "./priv/seeds"
+    }
+  },
+  "app":{
+    "migrationsDir": "MIGRATIONS_DIR",
+    "operationsLabels": {
+      "statusExecuted": "EXECUTED",
+      "statusRolledBack": "ROLLED_BACK",
+      "statusPending": "PENDING",
+      "rolledBackSuccess": "ROLLED_BACK_SUCCESS",
+      "rolledBackFailed": "ROLLED_BACK_FAILED",
+      "outcomeSuccess": "COMPLETE_SUCCESS",
+      "outcomeFailed": "COMPLETE_FAILED",
+      "outcomeMissing": "NONE"
+    }
+  },
+  "log": {
+    "base": {
+      "env": "production"
+    },
+    "enabled": false
+  }
+}

@@ -1,0 +1,6 @@
+{
+  "author": "Andrea",
+  "dbms":"mysql",
+  "up": "Insert x",
+  "down": "delete y"
+}
