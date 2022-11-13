@@ -2,11 +2,18 @@
   "name": "ares",
   "version": "1.0.0",
   "description": "",
-  "main": "./src/index.js",
+  "main": "./dist/bin/index.js",
   "scripts": {
     "test": "jest",
     "coverage": "jest --coverage",
-    "start": "tsc && node dist"
+    "start": "tsc && node bin",
+    "create": "npm run build && npm run test",
+    "build": "tsc -p .",
+    "local": "npm i -g && hello"
+  },
+  "files": ["config", "dist"],
+  "bin": {
+    "ares": "./dist/bin/index.js"
   },
   "author": "Andrea Di Blasi",
   "license": "MIT",

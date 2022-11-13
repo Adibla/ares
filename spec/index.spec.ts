@@ -1,8 +1,8 @@
-import { start } from "../src/start";
-import * as service from "../src/service";
-import * as service_migration from "../src/service/migration";
+import { start } from "../bin/start";
+import * as service from "../bin/service";
+import * as service_migration from "../bin/service/migration";
 import chalk from "chalk";
-import {CommandlineArgs} from "../src/interfaces";
+import {CommandlineArgs} from "../bin/interfaces";
 
 describe("Start", () => {
     jest.spyOn(service, "connect").mockImplementation(async e => {

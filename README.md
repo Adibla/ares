@@ -213,16 +213,15 @@ There are several environment variables that you could use in order to config th
  ```sh
    DB_HOST="localhost" #required
    DB_PORT=27017 #required
-   DB_USER="test" #required
-   DB_PASS="test" #required
+   DB_USER="admin" #required
+   DB_PASS="secret" #required
    DB_NAME="test" #required
-   AUTH_MECHANISM="test"
-   AUTH_SOURCE="test"
+   AUTH_MECHANISM="DEFAULT"
+   AUTH_SOURCE="admin"
    SERVICE_NAME="test"
-   SERVICE_NAME="test"
-   MIGRATIONS_STORE="test" #name of tbl support for migrations, used by Ares
+   MIGRATIONS_STORE="migrations-store" #name of tbl support for migrations, used by Ares
    MIGRATIONS_STORE_ID="test" #primary key of tbl support for migrations, used by Ares
-   MIGRATIONS_DIR="/src/data" #folder with migrations file (default=/src/data)
+   MIGRATIONS_DIR="./ares-data" #folder with migrations file
    STATUS_EXECUTED="COMPLETE_SUCCESS" #status if migration goes up with success
    STATUS_ROLLED_BACK="STATUS_ROLLED_BACK" #status if migration rolledback
    STATUS_PENDING="STATUS_PENDING" #status migration pending

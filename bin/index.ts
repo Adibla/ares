@@ -1,3 +1,6 @@
+#!/usr/bin/env node
+process.env.NODE_CONFIG_DIR = __dirname+'/../../config'
+
 import yargs from "yargs";
 import { hideBin } from "yargs/helpers";
 
