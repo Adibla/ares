@@ -22,7 +22,6 @@
 [![LinkedIn][linkedin-shield]](https://www.linkedin.com/in/andrea-di-blasi-888850b2/)
 
 
-
 <!-- PROJECT LOGO -->
 <br />
 <div align="center">
@@ -147,6 +146,25 @@ Ares is a tool that you can use to release migration scripts into your MongoDB o
 ## Getting Started
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+### Installation with npm
+
+_Below is showed how to install this cli with npm._
+
+1. In your project folder install pkg using npm
+   ```sh
+   npm i ares
+   ```
+2. Update your db connection info using [env variables](#usage) env variables or changing [config files](#usage)
+
+3. Create One on more migrations manually or using, they will be inserted under your MIGRATIONS_DIR folder (default data-ares on your project root)
+   ```sh
+   ares --operation create --name test --dbms MYSQL 
+   ```
+4. Run with
+   ```sh
+   ares --operation up
+   ```
 
 ### Installation with local clone
 

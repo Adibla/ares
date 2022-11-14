@@ -48,7 +48,7 @@ if(process.env.NODE_ENV !== 'test'){
       describe: 'tags migration you want to create',
       type: 'array'
     })
-    .check((argv) => {
+    .check((argv: any) => {
       if(argv.operation === 'create' && !argv.name){
         throw new Error('Argument check failed: You have to pass migration name with --name flag');
       }
