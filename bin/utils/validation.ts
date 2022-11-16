@@ -1,7 +1,6 @@
 import Ajv, {JSONSchemaType} from "ajv"
 import {Args, DbmsSupported, FileData} from "../interfaces";
 import {CustomValidationError} from "../errors";
-import {string} from "yargs";
 const ajv = new Ajv()
 
 const validateContent = async (content: FileData) => {

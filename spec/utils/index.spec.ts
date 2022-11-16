@@ -1,6 +1,6 @@
-import * as utility from "../../src/utils";
-import {formatDirContentBeforeStore} from "../../src/utils";
-import {DbmsSupported, FileData} from "../../src/interfaces";
+import * as utility from "../../bin/utils";
+import {formatDirContentBeforeStore} from "../../bin/utils";
+import {DbmsSupported, FileData} from "../../bin/interfaces";
 import fs from "fs";
 import * as R from "ramda";
 

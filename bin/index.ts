@@ -1,8 +1,13 @@
+#!/usr/bin/env node
+if(!process.env.USE_CUSTOM_CONFIG || process.env.USE_CUSTOM_CONFIG === "false"){
+  process.env.NODE_CONFIG_DIR = __dirname+'/../../config'
+}
+
 import yargs from "yargs";
 import { hideBin } from "yargs/helpers";
 
 import { start } from "./start";
-import { DbmsSupported } from "./interfaces";
+import {CommandlineArgs, DbmsSupported} from "./interfaces";
 
 let argv: any;
 if(process.env.NODE_ENV !== 'test'){
@@ -45,7 +50,7 @@ if(process.env.NODE_ENV !== 'test'){
       describe: 'tags migration you want to create',
       type: 'array'
     })
-    .check((argv) => {
+    .check((argv: any) => {
       if(argv.operation === 'create' && !argv.name){
         throw new Error('Argument check failed: You have to pass migration name with --name flag');
       }

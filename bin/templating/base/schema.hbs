@@ -1,0 +1,6 @@
+{
+    "up": {{#ifEquals results.s "MYSQL"}}""{{/ifEquals}}{{#ifEquals results.s "MONGODB"}}{}{{/ifEquals}},
+    "down": {{#ifEquals results.s "MYSQL"}}""{{/ifEquals}}{{#ifEquals results.s "MONGODB"}}{}{{/ifEquals}},
+    "author": "{{#if results.a}}{{results.a}}{{/if}}",
+    "dbms": "{{#if results.s}}{{results.s}}{{/if}}"
+}

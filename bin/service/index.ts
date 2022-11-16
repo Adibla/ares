@@ -39,7 +39,7 @@ let initDB = async (dbms: DbmsSupported) => {
 }
 
 
-let executeRaw = async (dbms: DbmsSupported, rawOp: string|object): Promise<boolean> => {
+let executeRaw = async (dbms: DbmsSupported, rawOp: string|object): Promise<unknown> => {
     const mapDbms: {[k in DbmsSupported]?:Connection } = {
         MYSQL: connectMysql,
         MONGODB: connectMongo,
