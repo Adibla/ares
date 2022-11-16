@@ -1,7 +1,7 @@
 
 import { migrationMongoRepo } from "../dbms/mongo/repo"
 import { migrationMysqlRepo } from "../dbms/mysql/repo"
-import { DbmsSupported, MigrationData, Repo} from "../interfaces";
+import {DbmsSupported, ListParams, MigrationData, Repo} from "../interfaces";
 
 const getMatchingDbms = (dbms: DbmsSupported): Repo => {
     const mapDbms:{[k in DbmsSupported]?:Repo } = {
@@ -15,8 +15,7 @@ const getMatchingDbms = (dbms: DbmsSupported): Repo => {
     throw new Error("Invalid dbms passed");
 }
 
-//TODO: remove params type inline
-const list = (params:{page?: number, limit?: number, id?: string, outcome?: string[], status?: string}, dbms: DbmsSupported) => {
+const list = (params: ListParams, dbms: DbmsSupported) => {
   const repoToUse:Repo = getMatchingDbms(dbms);
   return repoToUse.list(params);
 }

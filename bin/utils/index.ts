@@ -1,5 +1,6 @@
 import fs from "fs";
 
+import config from "config";
 import * as pack from '../../package.json';
 import { validateContent } from "./validation";
 import { groupBy } from "./array-utils";
@@ -27,12 +28,13 @@ const formatDirContentBeforeStore = async (dirContent: string[], dirPath: string
       up: validatedContent.up,
       down: validatedContent.down,
       ares_version: pack.version,
-      status: "PENDING", //todo: move in enum: PENDING, EXECUTED, ROLLED_BACK
-      outcome: "NONE", //todo: move in enum: NONE, COMPLETE_ERROR, COMPLETE_SUCCESS
+      status: config.get("app.operationsLabels.statusPending"),
+      outcome: config.get("app.operationsLabels.outcomeMissing"),
       filename: file,
       description: validatedContent.description,
       checksum: generateChecksum(JSON.stringify(validatedContent)),
-      created_at: new Date()
+      created_at: new Date(),
+      rolledback_at: null
     }
     return migration;
   })

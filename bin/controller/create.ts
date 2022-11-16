@@ -8,9 +8,9 @@ import chalk from "chalk";
 const create = async (args: CommandlineArgs) => {
     const filename = args.n;
     const author = args.a;
-    const id = crypto.randomUUID().replaceAll("-", "");
+    const id = crypto.randomUUID().replaceAll("-", "").slice(0,5);
 
-    const filenameToUse = author ? `${id}-${filename}-${author}.json` : `${id}-${filename}.json`
+    const filenameToUse = author ? `${Date.now()}-${filename}-${author}.json` : `${Date.now()}-${filename}.json`
     const schemaGen = await generateSchemaFromResults(filenameToUse, args);
     //todo: move in config all labels
     console.log(chalk.blue("NEW FILE MIGRATION CREATED WITH SUCCESS!"));

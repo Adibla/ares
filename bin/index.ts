@@ -1,11 +1,13 @@
 #!/usr/bin/env node
-process.env.NODE_CONFIG_DIR = __dirname+'/../../config'
+if(!process.env.USE_CUSTOM_CONFIG || process.env.USE_CUSTOM_CONFIG === "false"){
+  process.env.NODE_CONFIG_DIR = __dirname+'/../../config'
+}
 
 import yargs from "yargs";
 import { hideBin } from "yargs/helpers";
 
 import { start } from "./start";
-import { DbmsSupported } from "./interfaces";
+import {CommandlineArgs, DbmsSupported} from "./interfaces";
 
 let argv: any;
 if(process.env.NODE_ENV !== 'test'){

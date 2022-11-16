@@ -26,7 +26,7 @@
 <br />
 <div align="center">
   <h1 align="center">Ares</h1>
-  <h3 align="center">Andrew Release Execution Scripts</h3>
+  <h3 align="center">Andrea Release Execution Scripts</h3>
 ________________________($$$$$$$$$)__________________________
 _________________________($$$$$$$)___________________________
 _______________________($$$$$$$$$$$)_________________________
@@ -138,7 +138,7 @@ _____________________________($)_____________________________
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
-Ares is a tool that you can use to release migration scripts into your MongoDB or Mysql instance.
+Ares allows you to release migration scripts to your MongoDB or Mysql instance.
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 
@@ -149,15 +149,15 @@ Ares is a tool that you can use to release migration scripts into your MongoDB o
 
 ### Installation with npm
 
-_Below is showed how to install this cli with npm._
+_Here is a step-by-step guide to installing this cli using NPM._
 
-1. In your project folder install pkg using npm
+1. Use npm to install ares in your project folder
    ```sh
    npm i ares
    ```
-2. Update your db connection info using [env variables](#usage) env variables or changing [config files](#usage)
+2. Change the [config files](#usage) or [env variables](#usage) to update your database connection info 
 
-3. Create One on more migrations manually or using, they will be inserted under your MIGRATIONS_DIR folder (default data-ares on your project root)
+3. Using Ares or manually, create one or more migrations and place them in the MIGRATIONS_DIR folder (default data-ares on your project root).
    ```sh
    ares --operation create --name test --dbms MYSQL 
    ```
@@ -168,7 +168,7 @@ _Below is showed how to install this cli with npm._
 
 ### Installation with local clone
 
-_Below is showed how to install this cli with local clone._
+_Here is a step-by-step guide to installing this cli using local clone._
 
 1. Clone project using git
    ```sh
@@ -182,7 +182,7 @@ _Below is showed how to install this cli with local clone._
    ```sh
    npm i
    ```
-4. Update your db connection info using [env variables](#usage) env variables or changing [config files](#usage)
+4. Change the [config files](#usage) or [env variables](#usage) to update your database connection info
 
 5. Run with
     ```sh
@@ -196,7 +196,8 @@ _Below is showed how to install this cli with local clone._
 
 <!-- USAGE EXAMPLES -->
 ##Usage
-Set necessary ENV variables to specify your db config (or you could update config files located under /config)
+Specify your database configuration via ENV variables (or use USE_CUSTOM_CONFIG=true and update PROJECT/config/{env}.json)
+
 WINDOWS
  ```sh
   set DB_HOST="localhost"
@@ -219,72 +220,120 @@ UNIX
   export AUTH_SOURCE="test"
   export SERVICE_NAME="test" //for logging
    ```
-And then run the app, Ares creates a new table in your db with automatically generated migrations, the name of this collection is specified by MIGRATIONS_STORE env (migrations-store by default).
-  ```sh
-   npm run start -- --operation up
-   ```
-All existing migrations up commands in/src/data will be executed and their status will be saved in db.
-Currently the folder contains some examples of migrations.
+This pattern must be followed if you use config files
+```
+{
+  "db": {
+    "connection": {
+      "host": "localhost",
+      "port": 27017,
+      "user": "admin",
+      "password": "secret",
+      "database": "test",
+      "authMechanism": "DEFAULT",
+      "authSource": "admin"
+    },
+    "migrationsStoreTable":{
+      "tableName": "migrations-store",
+      "tableId": "id"
+    },
+    "seeds": {
+      "directory": "./priv/seeds"
+    }
+  },
+  "app":{
+    "migrationsDir": "./ares-data",
+    "operationsLabels": {
+      "statusExecuted": "EXECUTED",
+      "statusRolledBack": "ROLLED_BACK",
+      "statusPending": "PENDING",
+      "rolledBackSuccess": "ROLLED_BACK_SUCCESS",
+      "rolledBackFailed": "ROLLED_BACK_FAILED",
+      "outcomeSuccess": "COMPLETE_SUCCESS",
+      "outcomeFailed": "COMPLETE_FAILED",
+      "outcomeMissing": "NONE"
+    }
+  },
+  "log": {
+    "name": "app",
+    "base": {
+      "env": "dev"
+    },
+    "enabled": true,
+    "level": 20
+  }
+}
+```
+
+After running the app, Ares creates a new table in your database with generated migrations (included in your MIGRATIONS_DIR), whose name is specified by MIGRATIONS_STORE env (migrations-store by default).
+
+<span style="color: red">IMPORTANT</span> CURRENTLY THE FIRST MIGRATION DICTATES WHICH DBMS WILL BE USED (for multiple dbms supports, see [Roadmap](#Roadmap)
+```sh
+ares --operation up
+```
+We will execute all migrations' up commands in the MIGRATIONS_DIR folder and save their status in the database.
+There are currently some migration examples in the folder.
 
 ### ENVIRONMENT VARIABLES
-There are several environment variables that you could use in order to config the application (someone has default value)
+In order to configure the application, you can use several environment variables (someone has default values).
  ```sh
    DB_HOST="localhost" #required
    DB_PORT=27017 #required
    DB_USER="admin" #required
    DB_PASS="secret" #required
    DB_NAME="test" #required
+   USE_CUSTOM_CONFIG=false #It is used to include custom config files (instead of using env) located in ProjectDir/config/[env].json.
    AUTH_MECHANISM="DEFAULT"
    AUTH_SOURCE="admin"
    SERVICE_NAME="test"
-   MIGRATIONS_STORE="migrations-store" #name of tbl support for migrations, used by Ares
-   MIGRATIONS_STORE_ID="test" #primary key of tbl support for migrations, used by Ares
-   MIGRATIONS_DIR="./ares-data" #folder with migrations file
-   STATUS_EXECUTED="COMPLETE_SUCCESS" #status if migration goes up with success
-   STATUS_ROLLED_BACK="STATUS_ROLLED_BACK" #status if migration rolledback
-   STATUS_PENDING="STATUS_PENDING" #status migration pending
-   ROLLED_BACK_SUCCESS="ROLLED_BACK_SUCCESS" #status if migration rolledback with success
-   ROLLED_BACK_FAILED="ROLLED_BACK_FAILED" #status if migration rolledback with error
-   OUTCOME_SUCCESS="OUTCOME_SUCCESS" #status if migration up with error
-   OUTCOME_FAILED="OUTCOME_FAILED"  #status if migration goes up with success
-   OUTCOME_MISSING="OUTCOME_MISSING" #status if migration up with no outcome
+   MIGRATIONS_STORE="migrations-store" #Migration support table used by Ares for migrations
+   MIGRATIONS_STORE_ID="test" #The primary key of the migration table used by Ares for migrations
+   MIGRATIONS_DIR="./ares-data" #Folder that includes migrations file
+   STATUS_EXECUTED="COMPLETE_SUCCESS" #Status of migration if it is successful
+   STATUS_ROLLED_BACK="STATUS_ROLLED_BACK" #Status of migration if it is rolledback
+   STATUS_PENDING="STATUS_PENDING" #Status of migration if it is pending
+   ROLLED_BACK_SUCCESS="ROLLED_BACK_SUCCESS" #Result of migration if it is rolled back with success
+   ROLLED_BACK_FAILED="ROLLED_BACK_FAILED" #Result of migration if it is rolled back with errors
+   OUTCOME_SUCCESS="OUTCOME_SUCCESS" #Result of migration if it is successful
+   OUTCOME_FAILED="OUTCOME_FAILED"  #Result of migration if it is failed
+   OUTCOME_MISSING="OUTCOME_MISSING" #Status of migration if no outcome is achieved
    ```
 
 ### COMMAND LINE OPTIONS
 
 It executes all migrations' up commands contained in MIGRATIONS_DIR
 ```sh
-   npm run start -- --operation up
+   ares --operation up
    ```
 It executes all migrations' down commands contained in MIGRATIONS_DIR, **YOU CAN ONLY USE DOWN COMMAND FOR ALREADY DONE MIGRATIONS IN OUTCOME "COMPLETE_SUCCESS"**
 ```sh
-   npm run start -- --operation down
+   ares --operation down
    ```
 
 It executes only migrations' with id specified (if exist) with up commands, contained in MIGRATIONS_DIR
 ```sh
-   npm run start -- --operation up --migration 001 002
+   ares --operation up --migration 001 002
    ```
 
 It executes only migrations' with id specified (if exist) with down commands, contained in MIGRATIONS_DIR, **YOU CAN ONLY USE DOWN COMMAND FOR ALREADY DONE MIGRATIONS IN OUTCOME "COMPLETE_SUCCESS"**
 ```sh
-   npm run start -- --operation down --migration 001 002
+   ares --operation down --migration 001 002
    ```
 
 It creates new migration schema in MIGRATION_DIR, you have to specify --name (migration's name) param and --dbms (mysql or mongodb) and you could optionally includes other not required params (author, description, tags)
 ```sh
-   npm run start -- --operation create --name test --author andrea --dbms mysql
-   npm run start -- --operation create --name test --author andrea --dbms mysql --description desc --tags tag1 tag2
+   ares --operation create --name test --author andrea --dbms MYSQL
+   ares --operation create --name test --author andrea --dbms MYSQL --description desc --tags tag1 tag2
    
    ```
 
 ### MIGRATION ENTITY SPECIFICATION
-Filename of migration can contains title,id and author, delimitated by "-", for example: "001-example-andrea.json", but the same attributes could be included in json body. Currently json is the only filetype supported.
+A migration filename may include title, id, and author, separated by "-", for example, "001-example-andrea.json", but the same attributes may also be included in the migration body. Currently, json is the only filetype supported.
 Migration entity contains these attributes, they will be persisted in Ares' config table.
 
 - **id** (string) - Migration's id, it could be specified in filename or body
-- **author** (string) - Migration's author, it could be specified in body or filename.
-- **dbms** (string 'mysql'|'mongodb') - Migration's dbms, it could be specified only in body.
+- **author** (string) - Migration's Author, it could be specified in body or filename.
+- **dbms** (string 'MYSQL'|'MONGODB') - Migration's dbms, it could be specified only in body.
 - **tag**(string) - Migration's tag, it could be specified only in body.
 - **description**(string) - Migration's description, it could be specified only in body.
 - **comment**(string) - Migration's comment, it could be specified only in body.
@@ -300,7 +349,7 @@ Migration entity contains these attributes, they will be persisted in Ares' conf
 - **created_at**(date) - Migration's creation timestamp (automatically generated)
 
 ### TEST
-You can run unit test (using jest) with
+Unit tests can be run using Jest
 ````sh
 npm run test
 ````
@@ -319,8 +368,8 @@ npm run test
 - [x] Add back to top links
 - [ ] Custom messages for some use cases (already existing migration exc...)
 - [ ] Improve errors management
-- [ ] Manage multiple dbms in single transaction
-- [ ] Reuse MongoDB connection, no multiple instances
+- [ ] Manage multiple dbms in single transaction (think about that)
+- [ ] Connect to MongoDB once, no need to create multiple instances
 - [ ] Remove "any" everywhere and use types for everything
 - [ ] Other dbms support
 - [ ] Validation checksum

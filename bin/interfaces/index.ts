@@ -20,7 +20,8 @@ interface MigrationData {
     down: string|RunCommandOptions,
     description?: string,
     title?: string
-    created_at: Date
+    created_at?: Date|null
+    rolledback_at?: Date|null
 }
 
 interface FileData {
@@ -44,13 +45,19 @@ interface Args {
     migrations?: string[]
 }
 
-
+interface ListParams {
+    page?: number,
+    limit?: number,
+    id?: string,
+    outcome?: string[],
+    status?: string
+}
 
 interface Repo {
     saveAll(data: MigrationData[]): any;
     save(data: MigrationData): void;
     get(id: string): Promise<WithId<MigrationData> | null> |  Objection.QueryBuilder<Migration, Migration | undefined>;
-    list(params: {page?: number, limit?: number, id?: string, outcome?: string[], status?: string}): Promise<MigrationData[]> | Objection.QueryBuilder<Migration, Migration[] | undefined>;
+    list(params: ListParams): Promise<MigrationData[]> | Objection.QueryBuilder<Migration, Migration[] | undefined>;
     executeRaw(rawOp: string): void;
 }
 
@@ -58,7 +65,7 @@ interface Connection {
     connect(): void;
     close(): void;
     initMigrationsDB(): void;
-    executeRaw(rawOp: string | RunCommandOptions): Promise<boolean>;
+    executeRaw(rawOp: string | RunCommandOptions): Promise<unknown>;
 }
 
 interface CommandlineArgs {
@@ -88,5 +95,6 @@ export {
     Connection,
     Args,
     CommandlineArgs,
-    DbmsSupported
+    DbmsSupported,
+    ListParams
 }

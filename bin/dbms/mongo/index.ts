@@ -27,7 +27,7 @@ const connectMongo: Connection = {
     const connection = await client.connect();
     const db = connection.db(config.get("db.connection.database"));
     const op = await db.command(rawOpCommand)
-    return true;
+    return op;
   }
 }
 

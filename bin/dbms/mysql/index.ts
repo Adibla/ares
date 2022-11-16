@@ -32,7 +32,6 @@ const connectMysql: Connection = {
     //Insert migration up
     return connection.schema.hasTable(config.get("db.migrationsStoreTable.tableName")).then((exists: boolean) => {
       if (!exists) {
-        //todo: move schema to file config
         return connection.schema.createTable(config.get("db.migrationsStoreTable.tableName"), (t: any) => {
           t.string('id').primary();
           t.string('author');
@@ -50,12 +49,12 @@ const connectMysql: Connection = {
           t.string('filename');
           t.string('checksum');
           t.datetime('created_at');
+          t.datetime('rolledback_at');
         });
       }
     });
   },
   executeRaw: async(rawOp: string) => {
-    //TODO: implement, sanitize rawOp
     return connection.raw(rawOp);
   }
 }
