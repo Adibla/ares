@@ -1,6 +1,6 @@
 {
-  "name": "ares",
-  "version": "1.0.0",
+  "name": "ares-x",
+  "version": "0.1.0",
   "description": "",
   "main": "./dist/bin/index.js",
   "scripts": {

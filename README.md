@@ -153,7 +153,7 @@ _Here is a step-by-step guide to installing this cli using NPM._
 
 1. Use npm to install ares in your project folder
    ```sh
-   npm i ares
+   npm i ares-x
    ```
 2. Change the [config files](#usage) or [env variables](#usage) to update your database connection info 
 
