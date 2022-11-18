@@ -41,6 +41,7 @@ const connectMysql: Connection = {
           t.string('comment');
           t.string('title');
           t.string('labels');
+          t.string('op');
           t.string('up', 1000);
           t.string('down', 1000);
           t.string('ares_version');

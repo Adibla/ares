@@ -1,9 +1,7 @@
-import { create } from "./create";
-import { down } from "./down";
-import { up } from "./up";
+import {manualController} from "./manual";
+import {automaticController} from "./automatic";
 
 export {
- create,
- down,
- up
+    manualController,
+    automaticController
 }

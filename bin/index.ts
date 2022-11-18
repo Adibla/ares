@@ -10,7 +10,7 @@ import { start } from "./start";
 import {CommandlineArgs, DbmsSupported} from "./interfaces";
 
 let argv: any;
-if(process.env.NODE_ENV !== 'test'){
+if(process.env.NODE_ENV !== 'test' && process.env.AUTOMATIC_MODE !== "true"){
   //TODO: move all labels in config
   argv = yargs(hideBin(process.argv))
     .option('operation', {

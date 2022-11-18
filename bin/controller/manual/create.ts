@@ -1,8 +1,8 @@
 import * as fs from "fs";
 import * as crypto from "crypto";
 
-import { CommandlineArgs } from "../interfaces";
-import { generateSchemaFromResults } from "../templating";
+import { CommandlineArgs } from "../../interfaces";
+import { generateSchemaFromResults } from "../../templating";
 import chalk from "chalk";
 
 const create = async (args: CommandlineArgs) => {

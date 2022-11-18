@@ -1,15 +1,15 @@
 import chalk from "chalk";
 
 import config from "config";
-import { formatDirContentBeforeStore, loadDirData } from "../utils";
-import { connect, executeRaw, initDB } from "../service";
-import { CommandlineArgs, DbmsSupported, MigrationData} from "../interfaces";
-import { save, saveAll, list } from "../service/migration";
+import { formatAutomaticDirContentBeforeStore, loadDirData } from "../../utils";
+import { connect, executeRaw, initDB } from "../../service";
+import { CommandlineArgs, DbmsSupported, MigrationData} from "../../interfaces";
+import { save, saveAll, list } from "../../service/migration";
 
 const migrationExec = async (op:string, args: CommandlineArgs) => {
   const dataLocationDir: string = config.get("app.migrationsDir");
   const data = await loadDirData(dataLocationDir);
-  const formattedResultBeforeStore = await formatDirContentBeforeStore(data, dataLocationDir);
+  const formattedResultBeforeStore = await formatAutomaticDirContentBeforeStore(data, dataLocationDir);
   const finalOutcome: string[] = [
     config.get("app.operationsLabels.outcomeSuccess"),
     config.get("app.operationsLabels.outcomeFailed"),
@@ -90,15 +90,17 @@ const migrationExec = async (op:string, args: CommandlineArgs) => {
   return saveAllResult;
 }
 
-const getStatusFromOperation = (op: string): string => {
-  return op === 'up' ? config.get("app.operationsLabels.statusExecuted") : config.get("app.operationsLabels.statusRolledBack")
+const getStatusFromOperation = (op: string|undefined): string => {
+  return op === 'u' || op === 'uu' ? config.get("app.operationsLabels.statusExecuted") : config.get("app.operationsLabels.statusRolledBack")
 }
-const getOutcomeFromOperation = (op: string): string => {
-  return op === 'up' ? config.get("app.operationsLabels.outcomeSuccess") : config.get("app.operationsLabels.rolledBackSuccess")
+const getOutcomeFromOperation = (op: string|undefined): string => {
+  return op === 'u' || op === 'uu' ? config.get("app.operationsLabels.outcomeSuccess") : config.get("app.operationsLabels.rolledBackSuccess")
 }
 
-const isUpOperation = (op: string) => op === 'up';
+const isUpOperation = (op: string) => op === 'u' || op === 'uu';
 
 export {
-  migrationExec
+  migrationExec,
+  getOutcomeFromOperation,
+  getStatusFromOperation
 }

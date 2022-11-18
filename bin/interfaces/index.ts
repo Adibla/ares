@@ -8,6 +8,7 @@ interface MigrationData {
     _id?: string
     ares_version: string
     author?: string
+    op: string
     dbms: DbmsSupported,
     labels?: string,
     comment?: string,
@@ -82,13 +83,20 @@ interface CommandlineArgs {
     t?: string[],
     tags?: string[]
 }
+interface Controller {
+    create: Function,
+    up: Function,
+    down: Function,
+}
 
 enum DbmsSupported {
     MYSQL="MYSQL",
     MONGODB="MONGODB",
 }
 
+
 export {
+    Controller,
     Repo,
     MigrationData,
     FileData,
