@@ -51,17 +51,17 @@ const migrationExec = async () => {
     const foundMigration = migrationMatched[0];
     const isFoundAndChecksumDifferent = (foundMigration && (foundMigration?.checksum && foundMigration?.checksum !== migration.checksum))
     const isNotFoundAndDownOp = (!foundMigration && (migration.op !== automaticMigrationOperations.up && migration.op !== automaticMigrationOperations.upWithOverride))
-    const isFoundAndOutcomeIsSuccessAndOpUp = ((foundMigration && (foundMigration?.outcome === config.get("app.operationsLabels.outcomeSuccess") && (migration.op === automaticMigrationOperations.up))));
+    const isFoundAndOutcomeIsSuccessAndOpUp = ((foundMigration && (foundMigration?.outcome === config.get("app.operationsLabels.outcomeSuccess") && (isUpOperation(migration.op)))));
     const isFoundAndOutcomeErrorAndOpOverUp = ((foundMigration && (foundMigration?.outcome === config.get("app.operationsLabels.outcomeFailed") && migration.op !== automaticMigrationOperations.upWithOverride)));
     const isFoundAndOutcomeRolledbackErrorAndOpOverDown = ((foundMigration && (foundMigration?.outcome === config.get("app.operationsLabels.rolledBackFailed") && (migration.op !== automaticMigrationOperations.downWithOverride))));
     const isFoundAndOutcomeRolledbackSuccessAndOpOverDown = ((foundMigration && (foundMigration?.outcome === config.get("app.operationsLabels.rolledBackSuccess") && (migration.op !== automaticMigrationOperations.downWithOverride))));
     const isFoundAndOutcomeNoneAndOpOverUp = ((foundMigration && (foundMigration?.outcome === config.get("app.operationsLabels.outcomeMissing") && (migration.op !== automaticMigrationOperations.upWithOverride))));
 
-    if(isFoundAndChecksumDifferent){
+    if(foundMigration?.id === migration?.id && isFoundAndChecksumDifferent){
       console.log(chalk.red(`Conflict for id: ${foundMigration.migration_id} you cannot change content of already executed migration, please create a new Migration file`))
     }
 
-    if(!isFoundAndChecksumDifferent && !isNotFoundAndDownOp &&
+    if(!isNotFoundAndDownOp &&
         !isFoundAndOutcomeIsSuccessAndOpUp && !isFoundAndOutcomeErrorAndOpOverUp &&
         !isFoundAndOutcomeRolledbackErrorAndOpOverDown && !isFoundAndOutcomeRolledbackSuccessAndOpOverDown &&
         !isFoundAndOutcomeNoneAndOpOverUp

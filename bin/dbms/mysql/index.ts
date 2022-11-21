@@ -26,7 +26,8 @@ const connectMysql: Connection = {
     }
   },
   close: async () => {
-    return connection?.destroy()
+    return process.exit()
+    // return connection?.destroy()
   },
   initMigrationsDB: async () => {
     //Insert migration up

@@ -28,8 +28,9 @@ const start = async(args: CommandlineArgs) => {
       executedMigrations = await executeManualMode(args);
     }
     for (let executed of executedMigrations){
-      args?.o !== 'create' && executed?.dbms ? await close(executed.dbms): null;
+      (args?.o !== 'create' && executed?.dbms) ? await close(executed.dbms): null;
     }
+    return true;
   }catch (e: any){
     console.log(chalk.red('ERROR IN FLOW => ', e.message));
     throw e;

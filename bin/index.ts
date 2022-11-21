@@ -59,4 +59,4 @@ if(process.env.NODE_ENV !== 'test' && process.env.AUTOMATIC_MODE !== "true"){
     .argv
 }
 
-start(argv)
+start(argv);
