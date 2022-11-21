@@ -6,10 +6,7 @@ import { connect, executeRaw, initDB } from "../../service";
 import { CommandlineArgs, DbmsSupported, MigrationData} from "../../interfaces";
 import { save, saveAll, list } from "../../service/migration";
 
-const migrationExec = async (op:string, args: CommandlineArgs) => {
-  const dataLocationDir: string = config.get("app.migrationsDir");
-  const data = await loadDirData(dataLocationDir);
-  const formattedResultBeforeStore = await formatAutomaticDirContentBeforeStore(data, dataLocationDir);
+const migrationExec = async () => {
   const finalOutcome: string[] = [
     config.get("app.operationsLabels.outcomeSuccess"),
     config.get("app.operationsLabels.outcomeFailed"),
@@ -18,86 +15,99 @@ const migrationExec = async (op:string, args: CommandlineArgs) => {
     config.get("app.operationsLabels.rolledBackSuccess")
   ]
 
-  const filteredResults = formattedResultBeforeStore.filter((e: any) => e && (args?.m?.length ?  args?.m?.includes(e.id) : e));
+  const automaticMigrationOperations: {up: string, upWithOverride: string, down: string, downWithOverride: string} = config.get("app.automaticMigrationOperations");
+  const upAutomaticMigrations = [automaticMigrationOperations.upWithOverride, automaticMigrationOperations.up];
 
-  //todo: mantain only check on line 58
-  if(!filteredResults.length){
-    const message = (!isUpOperation(op)) ? 'NO NEW MIGRATIONS TO ROLLBACK! (you can only rollback migrations in outcome success)' : 'NO NEW MIGRATIONS!';
-    console.log(chalk.yellow(message));
-    return true;
-  }
-  const dbms: DbmsSupported = filteredResults[0].dbms;
-  const connection = await connect(dbms);
-  const initDb = dbms === DbmsSupported.MYSQL ? await initDB(dbms): null; //some dbs required migration for create table migration
+  const dataLocationDir: string = config.get("app.migrationsDir");
+  const data = await loadDirData(dataLocationDir);
 
-  const listPromises = filteredResults.map(async (migration) => {
+  const formattedResultBeforeStore = await formatAutomaticDirContentBeforeStore(data, dataLocationDir);
+
+  let alreadyInitDb = {
+    MONGODB: true,
+    MYSQL: false
+  };
+  let alreadyInitConnection = {
+    MONGODB: false,
+    MYSQL: false
+  };
+
+  const listMigrations = [];
+
+  for(let migration of formattedResultBeforeStore){
+    const dbms: DbmsSupported = migration.dbms;
+    if(!alreadyInitConnection[dbms]){
+      await connect(dbms);
+      alreadyInitConnection[dbms] = true;
+    }
+    if(!alreadyInitDb[dbms]){
+      await initDB(dbms); //some dbs required migration for create table migration;
+      alreadyInitDb[dbms] = true;
+    }
     const migrationMatched: any = await list({
-      id: migration.id,
+      migration_id: migration.migration_id,
       outcome: finalOutcome
     }, dbms)
-
     const foundMigration = migrationMatched[0];
-    const isDownOpAndMigrationNotFound = (!foundMigration && !isUpOperation(op));
-    const isFoundAndOutcomeNotSuccessAndOpDown = ((foundMigration && (foundMigration?.outcome !== config.get("app.operationsLabels.outcomeSuccess") && args.o === 'down')));
-    const isFoundAndOutcomeNotSuccessAndOpUp = ((foundMigration && (foundMigration?.outcome !== config.get("app.operationsLabels.outcomeSuccess") && args.o === 'up')));
-    const isFoundAndOpUp = ((foundMigration && isUpOperation(op)));
-    const isFoundAndOutcomeIsSuccessAndOpDown = ((foundMigration && (foundMigration?.outcome === config.get("app.operationsLabels.outcomeSuccess") && args.o === 'down')));
+    const isFoundAndChecksumDifferent = (foundMigration && (foundMigration?.checksum && foundMigration?.checksum !== migration.checksum))
+    const isNotFoundAndDownOp = (!foundMigration && (migration.op !== automaticMigrationOperations.up && migration.op !== automaticMigrationOperations.upWithOverride))
+    const isFoundAndOutcomeIsSuccessAndOpUp = ((foundMigration && (foundMigration?.outcome === config.get("app.operationsLabels.outcomeSuccess") && (migration.op === automaticMigrationOperations.up))));
+    const isFoundAndOutcomeErrorAndOpOverUp = ((foundMigration && (foundMigration?.outcome === config.get("app.operationsLabels.outcomeFailed") && migration.op !== automaticMigrationOperations.upWithOverride)));
+    const isFoundAndOutcomeRolledbackErrorAndOpOverDown = ((foundMigration && (foundMigration?.outcome === config.get("app.operationsLabels.rolledBackFailed") && (migration.op !== automaticMigrationOperations.downWithOverride))));
+    const isFoundAndOutcomeRolledbackSuccessAndOpOverDown = ((foundMigration && (foundMigration?.outcome === config.get("app.operationsLabels.rolledBackSuccess") && (migration.op !== automaticMigrationOperations.downWithOverride))));
+    const isFoundAndOutcomeNoneAndOpOverUp = ((foundMigration && (foundMigration?.outcome === config.get("app.operationsLabels.outcomeMissing") && (migration.op !== automaticMigrationOperations.upWithOverride))));
 
-    if(isFoundAndOutcomeNotSuccessAndOpUp || isFoundAndOpUp || isDownOpAndMigrationNotFound || isFoundAndOutcomeNotSuccessAndOpDown){
-      return null;
+    if(isFoundAndChecksumDifferent){
+      console.log(chalk.red(`Conflict for id: ${foundMigration.migration_id} you cannot change content of already executed migration, please create a new Migration file`))
     }
 
-    if(isFoundAndOutcomeIsSuccessAndOpDown) {
-      return migration;
+    if(!isFoundAndChecksumDifferent && !isNotFoundAndDownOp &&
+        !isFoundAndOutcomeIsSuccessAndOpUp && !isFoundAndOutcomeErrorAndOpOverUp &&
+        !isFoundAndOutcomeRolledbackErrorAndOpOverDown && !isFoundAndOutcomeRolledbackSuccessAndOpOverDown &&
+        !isFoundAndOutcomeNoneAndOpOverUp
+    ){
+      let saved = await save(migration, dbms);
+      listMigrations.push(migration);
     }
-
-    return migration;
-  })
-  const allResult: any = await Promise.all(listPromises);
-
-  const resultsCleared: MigrationData[] = allResult.filter((mig: MigrationData) => mig);
-  if(!resultsCleared.length){
-    const message = (!isUpOperation(op)) ? 'NO NEW MIGRATIONS TO ROLLBACK! (you can only rollback migrations in outcome success)' : 'NO NEW MIGRATIONS!';
-    console.log(chalk.yellow(message));
-    return filteredResults;
   }
 
-  const resultToSave: MigrationData[] = resultsCleared.map((res: MigrationData) => {
-    if(isUpOperation(op)){
-      return res;
-    }
-    const {created_at, ...resWithNoCreation} = res;
-    return resWithNoCreation
-  })
+  if(!listMigrations.length){
+    console.log(chalk.yellow("NO NEW MIGRATIONS!"));
+    return formattedResultBeforeStore;
+  }
 
-  const saveAllResult: MigrationData[] = await saveAll(resultToSave, dbms);
-  const allOperationsResultsPromises = saveAllResult.map(async (el: MigrationData) => {
+  const allOperationsResultsPromises = listMigrations.map(async (el: MigrationData) => {
     try {
-      if((isUpOperation(op) && !el?.up) || (!isUpOperation(op) && !el?.down)){
-        return save({...el, status: getStatusFromOperation(args.o), outcome: getOutcomeFromOperation(args.o), description: `Empty ${args.o === 'up' ? 'up':'down'} attribute `}, dbms)
+      //@ts-ignore
+      if((upAutomaticMigrations.includes(el.op) && !el?.up) || (!upAutomaticMigrations.includes(el.op) && !el?.down)){
+        return save({...el, status: getStatusFromOperation(el.op), outcome: getOutcomeFromOperation(el.op), description: `Empty ${upAutomaticMigrations.includes(el.op) ? automaticMigrationOperations.up : automaticMigrationOperations.down} attribute `}, el.dbms)
       }
-      const executedOperation = await executeRaw(dbms, isUpOperation(op) ? el?.up : el?.down);
-      return save({...el, status: getStatusFromOperation(args.o), rolledback_at: !isUpOperation(op) ? new Date() : null, outcome: getOutcomeFromOperation(args.o), description: JSON.stringify(executedOperation)}, dbms)
+      const executedOperation = await executeRaw(el.dbms, upAutomaticMigrations.includes(el.op) ? el?.up : el?.down);
+      return save({...el, status: getStatusFromOperation(el.op), rolledback_at: !upAutomaticMigrations.includes(el.op) ? new Date() : null, outcome: getOutcomeFromOperation(el.op), description: JSON.stringify(executedOperation)}, el.dbms)
     }catch (e: any){
-      //If err, update record with status failed
-      return save({...el, status: getStatusFromOperation(args.o), rolledback_at: !isUpOperation(op) ? new Date() : null,  outcome: args.o === 'up' ? config.get("app.operationsLabels.outcomeFailed") : config.get("app.operationsLabels.rolledBackFailed"), description: e.message}, dbms);
+      return save({...el, status: getStatusFromOperation(el.op), rolledback_at: !upAutomaticMigrations.includes(el.op) ? new Date() : null,  outcome: el.op === automaticMigrationOperations.up || el.op === automaticMigrationOperations.upWithOverride ? config.get("app.operationsLabels.outcomeFailed") : config.get("app.operationsLabels.rolledBackFailed"), description: e.message}, el.dbms);
     }
   })
-
+  //
   const allOperationsResults: any = await Promise.all(allOperationsResultsPromises);
-  const message = args.o === 'up' ? `MIGRATIONS DONE, ID =>, ${saveAllResult.map((e) => e.id)}` : `MIGRATIONS ROLLED BACK, ID =>, ${saveAllResult.map((e) => e.id)}`
+  const message = `MIGRATIONS DONE, ID =>, ${listMigrations.map((e) => e.id)}`
   console.log(chalk.green(message));
-  return saveAllResult;
+  return listMigrations;
 }
 
-const getStatusFromOperation = (op: string|undefined): string => {
-  return op === 'u' || op === 'uu' ? config.get("app.operationsLabels.statusExecuted") : config.get("app.operationsLabels.statusRolledBack")
+const getStatusFromOperation = (op: string): string => {
+  return isUpOperation(op) ? config.get("app.operationsLabels.statusExecuted") : config.get("app.operationsLabels.statusRolledBack")
 }
-const getOutcomeFromOperation = (op: string|undefined): string => {
-  return op === 'u' || op === 'uu' ? config.get("app.operationsLabels.outcomeSuccess") : config.get("app.operationsLabels.rolledBackSuccess")
+const getOutcomeFromOperation = (op: string): string => {
+  return isUpOperation(op) ? config.get("app.operationsLabels.outcomeSuccess") : config.get("app.operationsLabels.rolledBackSuccess")
 }
 
-const isUpOperation = (op: string) => op === 'u' || op === 'uu';
+const isUpOperation = (op: string) => {
+  const automaticMigrationOperations: {up: string, upWithOverride: string, down: string, downWithOverride: string} = config.get("app.automaticMigrationOperations");
+  const upAutomaticMigrations = [automaticMigrationOperations.upWithOverride, automaticMigrationOperations.up];
+
+  return upAutomaticMigrations.includes(op);
+};
 
 export {
   migrationExec,

@@ -42,27 +42,32 @@ const formatManualDirContentBeforeStore = async (dirContent: string[], dirPath: 
   return Promise.all(mappedJsonFile);
 }
 const formatAutomaticDirContentBeforeStore = async (dirContent: string[], dirPath: string): Promise<MigrationData[]> => {
+  const automaticMigrationOperations: {up: string, upWithOverride: string, down: string, downWithOverride: string} = config.get("app.automaticMigrationOperations");
+  const upAutomaticMigrations = [automaticMigrationOperations.upWithOverride, automaticMigrationOperations.up];
+  const downAutomaticMigrations = [automaticMigrationOperations.downWithOverride, automaticMigrationOperations.down];
+
   const mappedJsonFile = dirContent.map(async (file: string) => {
     const fileContent = await fs.promises.readFile(dirPath + '/' + file);
     const splittedFilename = file.split("-") //op --> u, uu, d,dd
     //TODO: add validation on required properties filename and throw error required fields
-    const op = splittedFilename.length > 0 ? splittedFilename[0] : "u";
-    const id = splittedFilename.length > 1 ? splittedFilename[1] : "generated";
-    const author = splittedFilename.length > 2 ? splittedFilename[2] : "Andrea"
-    const title = splittedFilename.length > 3 ? splittedFilename[3] : "title"
-    const dbms = splittedFilename.length > 4 ? splittedFilename[4] : DbmsSupported.MYSQL
-
+    const id = splittedFilename.length > 0 ? splittedFilename[0] : String(Date.now());
+    const op = splittedFilename.length > 1 ? splittedFilename[1] : "u";
+    const migration_id = splittedFilename.length > 2 ? splittedFilename[2] : "generated";
+    const dbms = splittedFilename.length > 3 ? splittedFilename[3] : DbmsSupported.MYSQL
+    const author = splittedFilename.length > 4 ? splittedFilename[4] : "Andrea"
+    const title = splittedFilename.length > 5 ? splittedFilename[5] : "Title"
     const migration: MigrationData = {
       id,
+      migration_id,
       author,
-      dbms: dbms === 'MYSQL'? DbmsSupported.MYSQL : DbmsSupported.MONGODB,
+      dbms: dbms === DbmsSupported.MYSQL ? DbmsSupported.MYSQL : DbmsSupported.MONGODB,
       title,
       // tag: validatedContent.tag,
       // labels: validatedContent.labels,
       // comment: validatedContent.comment,
       op,
-      up: ['uu', 'u'].includes(op) ? fileContent.toString(): "",
-      down: ['dd', 'd'].includes(op) ? fileContent.toString(): "",
+      up: upAutomaticMigrations.includes(op) ? (dbms === DbmsSupported.MONGODB ? JSON.parse(fileContent.toString()): fileContent.toString()) : "",
+      down: downAutomaticMigrations.includes(op) ? (dbms === DbmsSupported.MONGODB ? JSON.parse(fileContent.toString()): fileContent.toString()) : "",
       ares_version: pack.version,
       status: config.get("app.operationsLabels.statusPending"),
       outcome: config.get("app.operationsLabels.outcomeMissing"),

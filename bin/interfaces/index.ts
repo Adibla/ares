@@ -6,6 +6,7 @@ import { Migration } from "../dbms/mysql/model/migration";
 interface MigrationData {
     id: string
     _id?: string
+    migration_id?: string
     ares_version: string
     author?: string
     op: string
@@ -50,6 +51,7 @@ interface ListParams {
     page?: number,
     limit?: number,
     id?: string,
+    migration_id?: string,
     outcome?: string[],
     status?: string
 }

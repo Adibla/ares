@@ -1,6 +1,6 @@
 {
   "author": "Andrea",
   "dbms":"MYSQL",
-  "up": "Insert x",
+  "up": "INSERT INTO app.movies VALUE (\"Joker\", \"psychological thriller\", \"Todd Phillips\", 2019);\n\n",
   "down": "delete y"
 }

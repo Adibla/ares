@@ -1,0 +1,4 @@
+{
+  "insert": "samples",
+  "documents": [ {"test": true}, {"test": false}]
+}

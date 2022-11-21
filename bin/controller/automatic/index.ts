@@ -1,13 +1,10 @@
-import { create } from "./create";
-import { down } from "./down";
-import { up } from "./up";
+import {migrationExec} from "./common";
 
-import { Controller } from "../../interfaces";
+const automaticController = {
+ migrationExec: async () => {
+  return await migrationExec()
+ }
 
-const automaticController: Controller = {
- create,
- down,
- up
 }
 
 export {

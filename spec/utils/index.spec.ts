@@ -1,5 +1,5 @@
 import * as utility from "../../bin/utils";
-import {formatDirContentBeforeStore} from "../../bin/utils";
+import {formatManualDirContentBeforeStore} from "../../bin/utils";
 import {DbmsSupported, FileData} from "../../bin/interfaces";
 import fs from "fs";
 import * as R from "ramda";
@@ -9,14 +9,14 @@ describe("Utililty functions", () => {
         it('should return same files length',  async () => {
             const dataLocationDir = __dirname+"/../data/data-sample";
             const content = await fs.promises.readdir(dataLocationDir)
-            const formatted = await formatDirContentBeforeStore(content, dataLocationDir);
+            const formatted = await formatManualDirContentBeforeStore(content, dataLocationDir);
             expect(formatted.length).toBe(4);
         });
 
         it('should return same files formatted',  async () => {
             const dataLocationDir = __dirname + "/../data/data-sample";
             const content = await fs.promises.readdir(dataLocationDir)
-            const formatted = await formatDirContentBeforeStore(content, dataLocationDir);
+            const formatted = await formatManualDirContentBeforeStore(content, dataLocationDir);
 
             const expectedResult = [
                 {
@@ -95,7 +95,7 @@ describe("Utililty functions", () => {
         it('should get author name from file name if exist',  async () => {
             const dataLocationDir = __dirname + "/../data/data-author";
             const content = await fs.promises.readdir(dataLocationDir)
-            const formatted = await formatDirContentBeforeStore(content, dataLocationDir);
+            const formatted = await formatManualDirContentBeforeStore(content, dataLocationDir);
 
             const expectedResult = [
                 {
@@ -122,7 +122,7 @@ describe("Utililty functions", () => {
         it('should get author name from content if exist',  async () => {
             const dataLocationDir = __dirname + "/../data/data-author-content";
             const content = await fs.promises.readdir(dataLocationDir)
-            const formatted = await formatDirContentBeforeStore(content, dataLocationDir);
+            const formatted = await formatManualDirContentBeforeStore(content, dataLocationDir);
 
             const expectedResult = [
                 {

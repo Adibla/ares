@@ -12,11 +12,11 @@ const connectMysql: Connection = {
       connection = knex({
         client: 'mysql2',
         connection: {
-          host : config.get("db.connection.host"),
-          port : config.get("db.connection.port"),
-          user : config.get("db.connection.user"),
-          password : config.get("db.connection.password"),
-          database : config.get("db.connection.database")
+          host : config.get("db.connection.MYSQL.host"),
+          port : config.get("db.connection.MYSQL.port"),
+          user : config.get("db.connection.MYSQL.user"),
+          password : config.get("db.connection.MYSQL.password"),
+          database : config.get("db.connection.MYSQL.database")
         }
       })
 
@@ -34,6 +34,7 @@ const connectMysql: Connection = {
       if (!exists) {
         return connection.schema.createTable(config.get("db.migrationsStoreTable.tableName"), (t: any) => {
           t.string('id').primary();
+          t.string('migration_id');
           t.string('author');
           t.string('dbms');
           t.string('tag');

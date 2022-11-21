@@ -3,11 +3,11 @@ import {Migration} from "../model/migration";
 
 
 const migrationMysqlRepo: Repo = {
-  list: (params: {id:string, page: number, limit: number, status: string, outcome: string[]}) => {
-      const query = Migration.query().where("id",params.id);
+  list: (params: {migration_id:string, page: number, limit: number, status: string, outcome: string[]}) => {
+      const query = Migration.query().where("migration_id",params.migration_id);
       params.status ? query.andWhere("status", params.status) : query;
       params.outcome ? query.whereIn("outcome", params.outcome) :  query;
-      return query;
+      return query.orderBy("created_at", "desc");
   },
 
   get: (id: string) => {
@@ -15,9 +15,9 @@ const migrationMysqlRepo: Repo = {
   },
 
   save: async (data: MigrationData) => {
-      const migrationFound = Migration.query().findById(data.id);
+      const migrationFound = await Migration.query().findById(data.id);
       if(migrationFound){
-        return migrationFound.patch(data);
+        return Migration.query().updateAndFetchById(data.id, data);
       }
       return Migration.query().insert(data);
   },
