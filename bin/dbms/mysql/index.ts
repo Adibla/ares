@@ -52,7 +52,6 @@ const connectMysql: Connection = {
           t.string('filename');
           t.string('checksum');
           t.datetime('created_at');
-          t.datetime('rolledback_at');
         });
       }
     });

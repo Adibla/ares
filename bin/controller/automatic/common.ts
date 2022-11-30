@@ -83,9 +83,9 @@ const migrationExec = async () => {
         return save({...el, status: getStatusFromOperation(el.op), outcome: getOutcomeFromOperation(el.op), description: `Empty ${upAutomaticMigrations.includes(el.op) ? automaticMigrationOperations.up : automaticMigrationOperations.down} attribute `}, el.dbms)
       }
       const executedOperation = await executeRaw(el.dbms, upAutomaticMigrations.includes(el.op) ? el?.up : el?.down);
-      return save({...el, status: getStatusFromOperation(el.op), rolledback_at: !upAutomaticMigrations.includes(el.op) ? new Date() : null, outcome: getOutcomeFromOperation(el.op), description: JSON.stringify(executedOperation)}, el.dbms)
+      return save({...el, status: getStatusFromOperation(el.op), outcome: getOutcomeFromOperation(el.op), description: JSON.stringify(executedOperation)}, el.dbms)
     }catch (e: any){
-      return save({...el, status: getStatusFromOperation(el.op), rolledback_at: !upAutomaticMigrations.includes(el.op) ? new Date() : null,  outcome: el.op === automaticMigrationOperations.up || el.op === automaticMigrationOperations.upWithOverride ? config.get("app.operationsLabels.outcomeFailed") : config.get("app.operationsLabels.rolledBackFailed"), description: e.message}, el.dbms);
+      return save({...el, status: getStatusFromOperation(el.op), outcome: el.op === automaticMigrationOperations.up || el.op === automaticMigrationOperations.upWithOverride ? config.get("app.operationsLabels.outcomeFailed") : config.get("app.operationsLabels.rolledBackFailed"), description: e.message}, el.dbms);
     }
   })
   //

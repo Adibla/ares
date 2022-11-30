@@ -23,7 +23,6 @@ interface MigrationData {
     description?: string,
     title?: string
     created_at?: Date|null
-    rolledback_at?: Date|null
 }
 
 interface FileData {

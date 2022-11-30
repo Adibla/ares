@@ -34,8 +34,7 @@ const formatManualDirContentBeforeStore = async (dirContent: string[], dirPath: 
       filename: file,
       description: validatedContent.description,
       checksum: generateChecksum(JSON.stringify(validatedContent)),
-      created_at: new Date(),
-      rolledback_at: null
+      created_at: new Date()
     }
     return migration;
   })
@@ -74,8 +73,7 @@ const formatAutomaticDirContentBeforeStore = async (dirContent: string[], dirPat
       filename: file,
       // description: validatedContent.description,
       checksum: generateChecksum(JSON.stringify(fileContent.toString())),
-      created_at: new Date(),
-      rolledback_at: null
+      created_at: new Date()
     }
     return migration;
   })

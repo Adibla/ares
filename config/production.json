@@ -1,13 +1,24 @@
 {
   "db":  {
     "connection": {
-      "host": "",
-      "port": 27017,
-      "user": "",
-      "password": "",
-      "database": "",
-      "authMechanism": "DEFAULT",
-      "authSource": "admin"
+      "MONGODB":{
+        "host": "localhost",
+        "port": 27888,
+        "user": "mongoadmin",
+        "password": "secret",
+        "database": "test",
+        "authMechanism": "DEFAULT",
+        "authSource": "admin"
+      },
+      "MYSQL":{
+        "host": "localhost",
+        "port": 3306,
+        "user": "root",
+        "password": "password",
+        "database": "app",
+        "authMechanism": "DEFAULT",
+        "authSource": "admin"
+      }
     },
     "migrationsStoreTable":{
       "tableName": "migrations-store",
@@ -18,22 +29,30 @@
     }
   },
   "app":{
-    "migrationsDir": "MIGRATIONS_DIR",
+    "automaticMigrationOperations": {
+      "up": "u",
+      "upWithOverride": "uu",
+      "down": "d",
+      "downWithOverride": "dd"
+    },
+    "migrationsDir": "./data-ares-automatic",
     "operationsLabels": {
       "statusExecuted": "EXECUTED",
       "statusRolledBack": "ROLLED_BACK",
       "statusPending": "PENDING",
+      "outcomeSuccess": "COMPLETE_SUCCESS",
       "rolledBackSuccess": "ROLLED_BACK_SUCCESS",
       "rolledBackFailed": "ROLLED_BACK_FAILED",
-      "outcomeSuccess": "COMPLETE_SUCCESS",
       "outcomeFailed": "COMPLETE_FAILED",
       "outcomeMissing": "NONE"
     }
   },
   "log": {
+    "name": "app",
     "base": {
-      "env": "production"
+      "env": "test"
     },
-    "enabled": false
+    "enabled": false,
+    "level": 30
   }
 }

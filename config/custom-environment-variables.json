@@ -1,13 +1,24 @@
 {
   "db":  {
     "connection": {
-      "host": "DB_HOST",
-      "port": "DB_PORT",
-      "user": "DB_USER",
-      "password": "DB_PASS",
-      "database": "DB_NAME",
-      "authMechanism": "AUTH_MECHANISM",
-      "authSource": "AUTH_SOURCE"
+      "MONGODB":{
+        "host": "DB_MONGODB_HOST",
+        "port": "DB_MONGODB_PORT",
+        "user": "DB_MONGODB_USER",
+        "password": "DB_MONGODB_PASS",
+        "database": "DB_MONGODB_NAME",
+        "authMechanism": "AUTH_MONGODB_MECHANISM",
+        "authSource": "AUTH_MONGODB_SOURCE"
+      },
+      "MYSQL":{
+        "host": "DB_MYSQL_HOST",
+        "port": "DB_MYSQL_PORT",
+        "user": "DB_MYSQL_USER",
+        "password": "DB_MYSQL_PASS",
+        "database": "DB_MYSQL_NAME",
+        "authMechanism": "AUTH_MYSQL_MECHANISM",
+        "authSource": "AUTH_MYSQL_SOURCE"
+      }
     },
     "migrationsStoreTable":{
       "tableName": "MIGRATIONS_STORE",
@@ -15,6 +26,12 @@
     }
   },
   "app":{
+    "automaticMigrationOperations": {
+      "up": "MIGRATIONS_UP",
+      "upWithOverride": "MIGRATIONS_UP_OVERRIDE",
+      "down": "MIGRATIONS_DOWN",
+      "downWithOverride": "MIGRATIONS_DOWN_OVERRIDE"
+    },
     "migrationsDir": "MIGRATIONS_DIR",
     "operationsLabels": {
       "statusExecuted": "STATUS_EXECUTED",

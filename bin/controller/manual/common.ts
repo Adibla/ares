@@ -77,10 +77,10 @@ const migrationExec = async (op:string, args: CommandlineArgs) => {
         return save({...el, status: getStatusFromOperation(args.o), outcome: getOutcomeFromOperation(args.o), description: `Empty ${args.o === 'up' ? 'up':'down'} attribute `}, dbms)
       }
       const executedOperation = await executeRaw(dbms, isUpOperation(op) ? el?.up : el?.down);
-      return save({...el, status: getStatusFromOperation(args.o), rolledback_at: !isUpOperation(op) ? new Date() : null, outcome: getOutcomeFromOperation(args.o), description: JSON.stringify(executedOperation)}, dbms)
+      return save({...el, status: getStatusFromOperation(args.o), outcome: getOutcomeFromOperation(args.o), description: JSON.stringify(executedOperation)}, dbms)
     }catch (e: any){
       //If err, update record with status failed
-      return save({...el, status: getStatusFromOperation(args.o), rolledback_at: !isUpOperation(op) ? new Date() : null,  outcome: args.o === 'up' ? config.get("app.operationsLabels.outcomeFailed") : config.get("app.operationsLabels.rolledBackFailed"), description: e.message}, dbms);
+      return save({...el, status: getStatusFromOperation(args.o), outcome: args.o === 'up' ? config.get("app.operationsLabels.outcomeFailed") : config.get("app.operationsLabels.rolledBackFailed"), description: e.message}, dbms);
     }
   })
 
