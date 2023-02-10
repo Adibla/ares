@@ -26,7 +26,7 @@
 <br />
 <div align="center">
   <h1 align="center">Ares</h1>
-  <h3 align="center">Andrea Release Execution Scripts</h3>
+  <h3 align="center">Automatic Release Execution Scripts</h3>
 ________________________($$$$$$$$$)__________________________
 _________________________($$$$$$$)___________________________
 _______________________($$$$$$$$$$$)_________________________
@@ -138,7 +138,7 @@ _____________________________($)_____________________________
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
-Ares allows you to release migration scripts to your MongoDB or Mysql instance.
+Ares lets you publish migration scripts to your MongoDB or MySQL instance.
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 
@@ -151,13 +151,13 @@ Ares allows you to release migration scripts to your MongoDB or Mysql instance.
 
 _Here is a step-by-step guide to installing this cli using NPM._
 
-1. Use npm to install ares in your project folder
+1. Install ares in your project folder with npm.
    ```sh
    npm i ares-x
    ```
-2. Change the [config files](#usage) or [env variables](#usage) to update your database connection info 
+2. To update your database connection information, edit the [config files](#usage) or [env variables](#usage). 
 
-3. Using Ares or manually, create one or more migrations and place them in the MIGRATIONS_DIR folder (default data-ares on your project root).
+3. Create one or more migrations in the MIGRATIONS DIR folder using Ares or manually (default data-ares on your project root).
    ```sh
    ares --operation create --name test --dbms MYSQL 
    ```
@@ -170,11 +170,11 @@ _Here is a step-by-step guide to installing this cli using NPM._
 
 _Here is a step-by-step guide to installing this cli using local clone._
 
-1. Clone project using git
+1. Using git, clone the project.
    ```sh
    git clone git@github.com:Adibla/ares.git
    ```
-2. Go to installation folder
+2. Navigate to the installation folder.
     ```sh
    cd ./ares
    ```
@@ -182,7 +182,7 @@ _Here is a step-by-step guide to installing this cli using local clone._
    ```sh
    npm i
    ```
-4. Change the [config files](#usage) or [env variables](#usage) to update your database connection info
+4. To update your database connection information, edit the [config files](#usage) or [env variables](#usage).
 
 5. Run with
     ```sh
@@ -195,8 +195,8 @@ _Here is a step-by-step guide to installing this cli using local clone._
 
 
 <!-- USAGE EXAMPLES -->
-##Usage
-Specify your database configuration via ENV variables (or use USE_CUSTOM_CONFIG=true and update PROJECT/config/{env}.json)
+## Usage
+You can specify your database configuration using ENV variables, or you can use the USE CUSTOM CONFIG=true flag and update PROJECT/config/env. json.
 
 WINDOWS
  ```sh
@@ -220,7 +220,8 @@ UNIX
   export AUTH_SOURCE="test"
   export SERVICE_NAME="test" //for logging
    ```
-This pattern must be followed if you use config files
+This pattern must be followed if you use configuration files.
+
 ```
 {
   "db": {
@@ -265,17 +266,17 @@ This pattern must be followed if you use config files
 }
 ```
 
-After running the app, Ares creates a new table in your database with generated migrations (included in your MIGRATIONS_DIR), whose name is specified by MIGRATIONS_STORE env (migrations-store by default).
+After running the app, Ares creates a new table in your database with generated migrations (included in your MIGRATIONS DIR), with the name specified by the MIGRATIONS STORE environment variable (migrations-store by default).
 
-<span style="color: red">IMPORTANT</span> CURRENTLY THE FIRST MIGRATION DICTATES WHICH DBMS WILL BE USED (for multiple dbms supports, see [Roadmap](#Roadmap)
+<span style="color: red">IMPORTANT</span> CURRENTLY, THE FIRST MIGRATION DETERMINES WHICH DBMS WILL BE USED (for a list of supported DBMS, see [Roadmap](#Roadmap).
 ```sh
 ares --operation up
 ```
-We will execute all migrations' up commands in the MIGRATIONS_DIR folder and save their status in the database.
-There are currently some migration examples in the folder.
+All migrations' up commands will be executed in the MIGRATIONS DIR folder, and their status will be saved in the database.
+The folder currently contains some migration examples.
 
 ### ENVIRONMENT VARIABLES
-In order to configure the application, you can use several environment variables (someone has default values).
+Several environment variables can be used to configure the application (someone has default values).
  ```sh
    DB_HOST="localhost" #required
    DB_PORT=27017 #required
@@ -301,26 +302,26 @@ In order to configure the application, you can use several environment variables
 
 ### COMMAND LINE OPTIONS
 
-It executes all migrations' up commands contained in MIGRATIONS_DIR
+It runs all migrations' up commands from the MIGRATIONS DIR directory.
 ```sh
    ares --operation up
    ```
-It executes all migrations' down commands contained in MIGRATIONS_DIR, **YOU CAN ONLY USE DOWN COMMAND FOR ALREADY DONE MIGRATIONS IN OUTCOME "COMPLETE_SUCCESS"**
+It runs all down commands contained in the MIGRATIONS DIR for all migrations, **YOU CAN ONLY USE DOWN COMMAND FOR ALREADY DONE MIGRATIONS IN OUTCOME "COMPLETE SUCCESS"**.
 ```sh
    ares --operation down
    ```
 
-It executes only migrations' with id specified (if exist) with up commands, contained in MIGRATIONS_DIR
+It only executes migrations' with the specified id (if they exist) with up commands from the MIGRATIONS DIR.
 ```sh
    ares --operation up --migration 001 002
    ```
 
-It executes only migrations' with id specified (if exist) with down commands, contained in MIGRATIONS_DIR, **YOU CAN ONLY USE DOWN COMMAND FOR ALREADY DONE MIGRATIONS IN OUTCOME "COMPLETE_SUCCESS"**
+It only executes migrations with the specified id (if any exist) with down commands from the MIGRATIONS DIR, **YOU CAN ONLY USE DOWN COMMAND FOR ALREADY DONE MIGRATIONS IN OUTCOME "COMPLETE SUCCESS"**
 ```sh
    ares --operation down --migration 001 002
    ```
 
-It creates new migration schema in MIGRATION_DIR, you have to specify --name (migration's name) param and --dbms (mysql or mongodb) and you could optionally includes other not required params (author, description, tags)
+It creates a new migration schema in MIGRATION DIR, and you must specify the —name (migration's name) and —dbms (mysql or mongodb) parameters, as well as any other optional parameters (author, description, tags)
 ```sh
    ares --operation create --name test --author andrea --dbms MYSQL
    ares --operation create --name test --author andrea --dbms MYSQL --description desc --tags tag1 tag2
@@ -328,28 +329,28 @@ It creates new migration schema in MIGRATION_DIR, you have to specify --name (mi
    ```
 
 ### MIGRATION ENTITY SPECIFICATION
-A migration filename may include title, id, and author, separated by "-", for example, "001-example-andrea.json", but the same attributes may also be included in the migration body. Currently, json is the only filetype supported.
-Migration entity contains these attributes, they will be persisted in Ares' config table.
+The title, id, and author of a migration file may be separated by "-," for example, "001-example-andrea.json," but the same attributes may also be included in the migration body. Currently, only json files are supported.
+These attributes are contained in the migration entity and will be saved in Ares' configuration table.
 
-- **id** (string) - Migration's id, it could be specified in filename or body
-- **author** (string) - Migration's Author, it could be specified in body or filename.
-- **dbms** (string 'MYSQL'|'MONGODB') - Migration's dbms, it could be specified only in body.
-- **tag**(string) - Migration's tag, it could be specified only in body.
-- **description**(string) - Migration's description, it could be specified only in body.
-- **comment**(string) - Migration's comment, it could be specified only in body.
-- **title**(string) - Migration's title, it could be specified in filename or in body.
-- **labels**(string) - Migration's labels, it could be specified only in body.
-- **up**(string|RunCommandOptions) - Migration's up, it could be specified only in body, in case of MongoDB it's a [RunCommandOptions](https://www.mongodb.com/docs/manual/reference/command/).
-- **down**(string|RunCommandOptions) - Migration's down, it could be specified only in body, in case of MongoDB it's a [RunCommandOptions](https://www.mongodb.com/docs/manual/reference/command/).
-- **ares_version**(string) - Ares version, taken directly from package.json
-- **status**(string) - Migration's status
-- **outcome**(string) - Migration's outcome
-- **filename**(string) - Migration's filename
-- **checksum**(string) - Migration's checksum (automatically generated)
-- **created_at**(date) - Migration's creation timestamp (automatically generated)
+- **id** (string) - The id of the migration, which could be specified in the filename or body
+- **author** (string) - The author of the migration could be specified in the body or filename.
+- **dbms** (string 'MYSQL'|'MONGODB') - The migration's database, which can only be specified in the body.
+- **tag**(string) - The migration's tag, which can only be specified in the body.
+- **description**(string) - The migration's description, which can only be specified in the body.
+- **comment**(string) - The migration's comment, which can only be specified in the body.
+- **title**(string) - The title of the migration, which can be specified in the filename or in the body.
+- **labels**(string) - Migration labels, which can only be specified in the body.
+- **up**(string|RunCommandOptions) - When the migration is complete, it can only be specified in the body; in the case of MongoDB, it's a [RunCommandOptions](https://www.mongodb.com/docs/manual/reference/command/).
+- **down**(string|RunCommandOptions) - If the migration is complete, it can only be specified in the body; in the case of MongoDB, it's a [RunCommandOptions](https://www.mongodb.com/docs/manual/reference/command/).
+- **ares_version**(string) - Ares version, extracted from the package.json
+- **status**(string) - The status of the migration
+- **outcome**(string) - The result of migration
+- **filename**(string) - The filename of the migration
+- **checksum**(string) - The checksum of the migration (automatically generated)
+- **created_at**(date) - The migration's creation time (automatically generated)
 
 ### TEST
-Unit tests can be run using Jest
+Jest can be used to run unit tests.
 ````sh
 npm run test
 ````
@@ -363,14 +364,14 @@ npm run test
 <!-- ROADMAP -->
 ## Roadmap
 
-- [x] First draft
-- [x] Add Changelog
-- [x] Add back to top links
-- [ ] Custom messages for some use cases (already existing migration exc...)
-- [ ] Improve errors management
-- [ ] Manage multiple dbms in single transaction (think about that)
-- [ ] Connect to MongoDB once, no need to create multiple instances
-- [ ] Remove "any" everywhere and use types for everything
+- [x] The first draft
+- [x] Include a Changelog
+- [x] Return to top links
+- [ ] Messages tailored to specific use cases (already existing migration exc...)
+- [ ] Enhance error management
+- [ ] Multiple databases can be managed in a single transaction (think about that)
+- [ ] There is no need to create multiple instances of MongoDB.
+- [ ] Remove "any" and replace it with types for everything.
 - [ ] Other dbms support
 - [ ] Validation checksum
 - [ ] YAML support
