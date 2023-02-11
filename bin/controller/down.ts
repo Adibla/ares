@@ -1,8 +1,8 @@
 import { migrationExec } from "./common";
-import { CommandlineArgs } from "../interfaces";
+import { CommandlineArgs, Operation } from "../interfaces";
 
 const down = async(args: CommandlineArgs) => {
-  return migrationExec("down", args);
+  return migrationExec(Operation.DOWN, args);
 }
 export {
     down

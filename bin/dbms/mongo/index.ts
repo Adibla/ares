@@ -1,8 +1,9 @@
-import { Connection } from "../../interfaces";
+import config from "config";
 import {MongoClient, RunCommandOptions} from "mongodb";
 
-import config from "config";
+import { Connection } from "../../interfaces";
 import { Db } from "./model/migration";
+
 
 const param = `mongodb://${config.get("db.connection.user")}:${config.get("db.connection.password")}@${config.get("db.connection.host")}:${config.get("db.connection.port")}/${config.get("db.connection.database")}?authMechanism=${config.get("db.connection.authMechanism")}&authSource=${config.get("db.connection.authSource")}`;
 

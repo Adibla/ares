@@ -88,6 +88,12 @@ enum DbmsSupported {
     MONGODB="MONGODB",
 }
 
+enum Operation {
+    UP="UP",
+    DOWN="DOWN",
+    CREATE="CREATE",
+}
+
 export {
     Repo,
     MigrationData,
@@ -96,5 +102,6 @@ export {
     Args,
     CommandlineArgs,
     DbmsSupported,
+    Operation,
     ListParams
 }

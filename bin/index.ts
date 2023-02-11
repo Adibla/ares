@@ -7,7 +7,7 @@ import yargs from "yargs";
 import { hideBin } from "yargs/helpers";
 
 import { start } from "./start";
-import {CommandlineArgs, DbmsSupported} from "./interfaces";
+import {CommandlineArgs, DbmsSupported, Operation} from "./interfaces";
 
 let argv: any;
 if(process.env.NODE_ENV !== 'test'){
@@ -17,7 +17,7 @@ if(process.env.NODE_ENV !== 'test'){
       alias: 'o',
       describe: 'operation to execute',
       required: true,
-      choices: ['up', 'down', 'create']
+      choices: [Operation.UP, Operation.DOWN, Operation.CREATE]
     })
     .option('migrations', {
       alias: 'm',
@@ -51,7 +51,7 @@ if(process.env.NODE_ENV !== 'test'){
       type: 'array'
     })
     .check((argv: any) => {
-      if(argv.operation === 'create' && !argv.name){
+      if(argv.operation === Operation.CREATE && !argv.name){
         throw new Error('Argument check failed: You have to pass migration name with --name flag');
       }
       return true;

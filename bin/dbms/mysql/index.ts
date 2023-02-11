@@ -1,7 +1,7 @@
 import { Model } from "objection";
 import { knex } from 'knex';
-
 import config from "config";
+
 import { Connection } from "../../interfaces";
 
 let connection: any;

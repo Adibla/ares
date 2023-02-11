@@ -3,10 +3,10 @@ import chalk from "chalk";
 import config from "config";
 import { formatDirContentBeforeStore, loadDirData } from "../utils";
 import { connect, executeRaw, initDB } from "../service";
-import { CommandlineArgs, DbmsSupported, MigrationData} from "../interfaces";
+import { CommandlineArgs, DbmsSupported, MigrationData, Operation} from "../interfaces";
 import { save, saveAll, list } from "../service/migration";
 
-const migrationExec = async (op:string, args: CommandlineArgs) => {
+const migrationExec = async (op: Operation, args: CommandlineArgs) => {
   const dataLocationDir: string = config.get("app.migrationsDir");
   const data = await loadDirData(dataLocationDir);
   const formattedResultBeforeStore = await formatDirContentBeforeStore(data, dataLocationDir);
@@ -38,10 +38,10 @@ const migrationExec = async (op:string, args: CommandlineArgs) => {
 
     const foundMigration = migrationMatched[0];
     const isDownOpAndMigrationNotFound = (!foundMigration && !isUpOperation(op));
-    const isFoundAndOutcomeNotSuccessAndOpDown = ((foundMigration && (foundMigration?.outcome !== config.get("app.operationsLabels.outcomeSuccess") && args.o === 'down')));
-    const isFoundAndOutcomeNotSuccessAndOpUp = ((foundMigration && (foundMigration?.outcome !== config.get("app.operationsLabels.outcomeSuccess") && args.o === 'up')));
+    const isFoundAndOutcomeNotSuccessAndOpDown = ((foundMigration && (foundMigration?.outcome !== config.get("app.operationsLabels.outcomeSuccess") && args.o === Operation.DOWN)));
+    const isFoundAndOutcomeNotSuccessAndOpUp = ((foundMigration && (foundMigration?.outcome !== config.get("app.operationsLabels.outcomeSuccess") && args.o === Operation.UP)));
     const isFoundAndOpUp = ((foundMigration && isUpOperation(op)));
-    const isFoundAndOutcomeIsSuccessAndOpDown = ((foundMigration && (foundMigration?.outcome === config.get("app.operationsLabels.outcomeSuccess") && args.o === 'down')));
+    const isFoundAndOutcomeIsSuccessAndOpDown = ((foundMigration && (foundMigration?.outcome === config.get("app.operationsLabels.outcomeSuccess") && args.o === Operation.DOWN)));
 
     if(isFoundAndOutcomeNotSuccessAndOpUp || isFoundAndOpUp || isDownOpAndMigrationNotFound || isFoundAndOutcomeNotSuccessAndOpDown){
       return null;
@@ -74,30 +74,30 @@ const migrationExec = async (op:string, args: CommandlineArgs) => {
   const allOperationsResultsPromises = saveAllResult.map(async (el: MigrationData) => {
     try {
       if((isUpOperation(op) && !el?.up) || (!isUpOperation(op) && !el?.down)){
-        return save({...el, status: getStatusFromOperation(args.o), outcome: getOutcomeFromOperation(args.o), description: `Empty ${args.o === 'up' ? 'up':'down'} attribute `}, dbms)
+        return save({...el, status: getStatusFromOperation(args.o), outcome: getOutcomeFromOperation(args.o), description: `Empty ${args.o === Operation.UP ? Operation.UP:Operation.DOWN} attribute `}, dbms)
       }
       const executedOperation = await executeRaw(dbms, isUpOperation(op) ? el?.up : el?.down);
       return save({...el, status: getStatusFromOperation(args.o), rolledback_at: !isUpOperation(op) ? new Date() : null, outcome: getOutcomeFromOperation(args.o), description: JSON.stringify(executedOperation)}, dbms)
     }catch (e: any){
       //If err, update record with status failed
-      return save({...el, status: getStatusFromOperation(args.o), rolledback_at: !isUpOperation(op) ? new Date() : null,  outcome: args.o === 'up' ? config.get("app.operationsLabels.outcomeFailed") : config.get("app.operationsLabels.rolledBackFailed"), description: e.message}, dbms);
+      return save({...el, status: getStatusFromOperation(args.o), rolledback_at: !isUpOperation(op) ? new Date() : null,  outcome: args.o === Operation.UP ? config.get("app.operationsLabels.outcomeFailed") : config.get("app.operationsLabels.rolledBackFailed"), description: e.message}, dbms);
     }
   })
 
   const allOperationsResults: any = await Promise.all(allOperationsResultsPromises);
-  const message = args.o === 'up' ? `MIGRATIONS DONE, ID =>, ${saveAllResult.map((e) => e.id)}` : `MIGRATIONS ROLLED BACK, ID =>, ${saveAllResult.map((e) => e.id)}`
+  const message = args.o === Operation.UP ? `MIGRATIONS DONE, ID => ${saveAllResult.map((e) => e.id)}` : `MIGRATIONS ROLLED BACK, ID =>, ${saveAllResult.map((e) => e.id)}`
   console.log(chalk.green(message));
   return saveAllResult;
 }
 
 const getStatusFromOperation = (op: string): string => {
-  return op === 'up' ? config.get("app.operationsLabels.statusExecuted") : config.get("app.operationsLabels.statusRolledBack")
+  return op === Operation.UP ? config.get("app.operationsLabels.statusExecuted") : config.get("app.operationsLabels.statusRolledBack")
 }
 const getOutcomeFromOperation = (op: string): string => {
-  return op === 'up' ? config.get("app.operationsLabels.outcomeSuccess") : config.get("app.operationsLabels.rolledBackSuccess")
+  return op === Operation.UP ? config.get("app.operationsLabels.outcomeSuccess") : config.get("app.operationsLabels.rolledBackSuccess")
 }
 
-const isUpOperation = (op: string) => op === 'up';
+const isUpOperation = (op: string) => op === Operation.UP;
 
 export {
   migrationExec

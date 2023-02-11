@@ -157,7 +157,7 @@ _Here is a step-by-step guide to installing this cli using NPM._
    ```
 2. To update your database connection information, edit the [config files](#usage) or [env variables](#usage). 
 
-3. Create one or more migrations in the MIGRATIONS DIR folder using Ares or manually (default data-ares on your project root).
+3. Create one or more migrations in the MIGRATIONS DIR folder using Ares or manually (default ares-data on your project root).
    ```sh
    ares --operation create --name test --dbms MYSQL 
    ```

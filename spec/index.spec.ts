@@ -2,7 +2,7 @@ import { start } from "../bin/start";
 import * as service from "../bin/service";
 import * as service_migration from "../bin/service/migration";
 import chalk from "chalk";
-import {CommandlineArgs} from "../bin/interfaces";
+import {CommandlineArgs, Operation} from "../bin/interfaces";
 
 describe("Start", () => {
     jest.spyOn(service, "connect").mockImplementation(async e => {
@@ -37,7 +37,7 @@ describe("Start", () => {
 
     it("Should return true", async() => {
         console.log = jest.fn();
-        const args: CommandlineArgs = {o: "up", description: "dsc"};
+        const args: CommandlineArgs = {o: Operation.UP, description: "dsc"};
         await expect(start(args)).resolves.not.toThrowError();
 
         expect(console.log).toHaveBeenCalledWith(chalk.green('MIGRATIONS DONE, ID => '));
@@ -53,7 +53,7 @@ describe("Start", () => {
             }];
         } )
 
-        const args: CommandlineArgs = {o: "up", m: ["001"], description:"desc"};
+        const args: CommandlineArgs = {o: Operation.UP, m: ["001"], description:"desc"};
         await expect(start(args)).resolves.not.toThrowError();
         expect(console.log).toHaveBeenCalledWith(chalk.yellow('NO NEW MIGRATIONS!'));
     })
