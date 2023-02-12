@@ -1,6 +1,6 @@
 {
-    "up": {{#ifEquals results.s "MYSQL"}}""{{/ifEquals}}{{#ifEquals results.s "MONGODB"}}{}{{/ifEquals}},
-    "down": {{#ifEquals results.s "MYSQL"}}""{{/ifEquals}}{{#ifEquals results.s "MONGODB"}}{}{{/ifEquals}},
+    "up": {{#ifEquals results.s "MYSQL"}}""{{/ifEquals}}{{#ifEquals results.s "MONGODB"}}{}{{/ifEquals}}{{^results.s}}""{{/results.s}},
+    "down": {{#ifEquals results.s "MYSQL"}}""{{/ifEquals}}{{#ifEquals results.s "MONGODB"}}{}{{/ifEquals}}{{^results.s}}""{{/results.s}},
     "author": "{{#if results.a}}{{results.a}}{{/if}}",
     "dbms": "{{#if results.s}}{{results.s}}{{/if}}"
 }

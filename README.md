@@ -157,7 +157,7 @@ _Here is a step-by-step guide to installing this cli using NPM._
    ```
 2. To update your database connection information, edit the [config files](#usage) or [env variables](#usage). 
 
-3. Create one or more migrations in the MIGRATIONS DIR folder using Ares or manually (default ares-data on your project root).
+3. Create one or more migrations in the MIGRATIONS DIR folder using Ares or manually (default ares-data on your project root, follow [filename](#migration-filename-specification) for details).
    ```sh
    ares --operation create --name test --dbms MYSQL 
    ```
@@ -327,6 +327,10 @@ It creates a new migration schema in MIGRATION DIR, and you must specify the —
    ares --operation create --name test --author andrea --dbms MYSQL --description desc --tags tag1 tag2
    
    ```
+### MIGRATION FILENAME SPECIFICATION
+The filename of the migration file (if created manually) must follow the following pattern:
+001-example-andrea.json
+where the first part is the migration's id, the second is the description, and the third is the migration's author. It is critical that the id is incremental, as MIGRATIONS ARE CARRIED OUT IN THE ORDER OF THAT ID.
 
 ### MIGRATION ENTITY SPECIFICATION
 The title, id, and author of a migration file may be separated by "-," for example, "001-example-andrea.json," but the same attributes may also be included in the migration body. Currently, only json files are supported.

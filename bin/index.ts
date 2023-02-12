@@ -7,7 +7,7 @@ import yargs from "yargs";
 import { hideBin } from "yargs/helpers";
 
 import { start } from "./start";
-import {CommandlineArgs, DbmsSupported, Operation} from "./interfaces";
+import { DbmsSupported, Operation} from "./interfaces";
 
 let argv: any;
 if(process.env.NODE_ENV !== 'test'){

@@ -8,7 +8,6 @@ const create = async (args: CommandlineArgs) => {
     const filename = args.n;
     const author = args.a;
     const id = crypto.randomUUID().replaceAll("-", "").slice(0,5);
-
     const filenameToUse = author ? `${Date.now()}-${filename}-${author}.json` : `${Date.now()}-${filename}.json`
     const schemaGen = await generateSchemaFromResults(filenameToUse, args);
     //todo: move in config all labels
